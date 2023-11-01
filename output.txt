@@ -1,0 +1,3 @@
+Word Count: 72
+Line Count: 7
+Total Size: 432 bytes

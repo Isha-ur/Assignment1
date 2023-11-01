@@ -1,0 +1,7 @@
+Lorem Ipsum text was first introduced by medieval 
+scholars who were using it as a placeholder for manuscripts. 
+The text is now commonly used in web design, graphic design, and typography,
+as well as in text layout and formatting. The text is easy to read and not 
+particularly meaningful, making it ideal for testing purposes.
+It can be used to design logos, 
+pages, and other layout elements and is widely available online.
