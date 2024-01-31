@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Tabulator CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/tabulator-tables@5.5.2/dist/css/tabulator.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/tabulator-tables@5.2.2/dist/js/tabulator.min.js"></script>
+
+    <!-- Additional Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tabulator/5.2.2/css/tabulator.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.13.272/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tabulator/5.2.2/js/tabulator.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+
+        body {
+            font-family: 'Arial', sans-serif;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+           
+        }
+
+        header {
+            top: 0%;
+            background-color: #333;
+            color: #fff;
+            padding: 15px; /* Increased padding for a cleaner look */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Vertically center the content */
+            position: sticky;
+            width: 100%;
+        }
+
+        #example-table {
+            flex: 1;
+            max-width: 100%;
+            margin: 10vh auto;
+            padding: 20px;
+            overflow: auto; /* Enable scrolling for the table */
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: #fff;
+            margin-top: auto;
+            position: sticky;
+            width: 100%;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #addDataButton {
+            margin-top: 8vh;
+        }
+
+        #table-info {
+            margin-top: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Tabulator App</h1>
+        <div>
+            <div>
+                Rows: <span id="visibleRowCount">0</span> /
+                <span id="totalRowCount">0</span>
+            </div>
+            <div>
+                <button id="print-table">Print Table</button>
+                <button id="download-pdf">PDF </button>
+                <button id="download-excel">Excel</button>
+                <button id="import-file">Import</button>
+            </div>
+        </div>
+        <div>
+            <button id="addDataButton">Add Data</button>
+            <input type="number" id="data-count" min="0" value="0">
+        </div>
+    </header>
+
+    <div id="example-table"></div>
+
+    <footer>
+        <h1 >Tabulator App Footer</h1>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var table = new Tabulator("#example-table", {
+          maxWidth: "100%",
+          layout: "fitColumns",
+          selectable: true,
+          pagination: "local",
+          dataTree: true,
+          dataTreeStartExpanded: false,
+          dataTreeFilter: true,
+          persistence: true,
+          paginationSize: 10,
+          paginationCounter: "rows",
+          paginationSizeSelector: [10, 20, 50, 100, true],
+          data: [],
+          columns: [
+            {
+              title: "Number",
+              field: "number",
+              sorter: "number",
+              headerFilter: "input",
+            },
+            {
+              title: "Name",
+              field: "name",
+              sorter: "name",
+              headerFilter: "input",
+            },
+            {
+              title: "Date Time",
+              field: "datetime",
+              sorter: "datetime",
+              headerFilter: "input",
+            },
+            { title: "Text", field: "text", headerFilter: "input" },
+            {
+              title: "Delete",
+              formatter: "buttonCross", // Using built-in cross button 
+
+              headerSort: false,
+              cellClick: function (e, cell) {
+                var row = cell.getRow();
+                row.delete();
+              },
+            },
+            {
+              title: "Download",
+              formatter: "buttonTick", // Using built-in cross button
+              headerSort: false,
+              cellClick: function (e, cell) {
+                let strFileName = cell.getRow().getData().name;
+                table.download("csv", strFileName, {}, "selected");
+                //working on delete.
+              },
+            },
+          ],
+
+          downloadConfig: {
+            pdf: {
+              orientation: "portrait", // set page orientation to portrait
+              title: "Table Data", // add title to report
+            },
+            excel: {
+              sheetName: "Table Data", // add sheet name to report
+            },
+          },
+        });
+
+        document
+          .getElementById("print-table")
+          .addEventListener("click", function () {
+            table.print(false, true);
+          });
+
+        function addRandomData() {
+          let newData = [];
+          let dataCount = document.getElementById("data-count").valueAsNumber || 100;
+          for (let i = 0; i < dataCount; i++) {
+            newData.push({
+              number: Math.floor(Math.random() * 1000),
+              name: `Name${i}`,
+              datetime: new Date().toISOString(),
+              text: "Text " + Math.floor(Math.random() * 100),
+              _children: [
+                {
+                  number: Math.floor(Math.random() * 1000),
+                  datetime: new Date().toISOString(),
+                  text: "Some Random Text",
+                }, //child rows
+              ],
+            });
+          }
+          table.addData(newData).then(() => {
+            alert("Data added successfully!");
+          });
+          table.setPage(1); // Reset to the first page after adding data
+        }
+
+        function updateColumnCount() {
+          document.getElementById("columnCount").value = `${
+            table.getColumns().length
+          } / ${table.columnManager.columns.length}`;
+        }
+
+        //display rows.
+        var intervalId = window.setInterval(function () {
+          updateRowCount();
+        }, 1000);
+        // Function to update row count
+        function updateRowCount() {
+          var visibleRowCount = table.getPageSize();
+          var totalRowCount = table.getDataCount();
+          document.getElementById("visibleRowCount").innerText =
+            visibleRowCount;
+          document.getElementById("totalRowCount").innerText = totalRowCount;
+        }
+
+        document
+          .getElementById("download-excel")
+          .addEventListener("click", function () {
+            console.log("Excel button clicked");
+            table.download("csv", "data.csv", { sheetName: "MyData" });
+          });
+        document
+          .getElementById("import-file")
+          .addEventListener("click", function () {
+            console.log("pdf import button clicked!");
+            table.import("csv", ".csv");
+          });
+
+        document
+          .getElementById("download-pdf")
+          .addEventListener("click", function () {
+            console.log("PDF button clicked");
+            table.download("pdf", "data.pdf", {
+              orientation: "portrait",
+              title: "Tabulator Data",
+            });
+          });
+
+        document
+          .getElementById("addDataButton")
+          .addEventListener("click", addRandomData);
+      });
+    </script>
+</body>
+
+</html>

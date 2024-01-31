@@ -9,7 +9,7 @@ function interchangeFirstAndLastDigit(input)
 
     const firstDigit = numberStr[0];
     const lastDigit = numberStr[numberStr.length - 1];
-  
+
     //  swap first and last digit
     const newNumberStr = lastDigit + numberStr.substring(1, numberStr.length - 1) + firstDigit;
     

@@ -3,12 +3,14 @@ const fs = require('fs');
 //count words 
 function countWords(text) {
   const words = text.split(/\s+/);
+  console.log(words);
   return words.length;
 }
 
 //count lines 
 function countLines(text) {
   const lines = text.split('\n');
+  console.log(lines);
   return lines.length;
 }
 

@@ -20,6 +20,10 @@ function segregateEvenOdd(arr) {
 
 function removeDuplicates(arr) {
     var uniqueArr = arr.filter(function(item, index, self) {
+        console.log(item);
+        console.log(index);
+        console.log(self);
+        console.log(self.indexOf(item) === index)
         return self.indexOf(item) === index;
     });
     return uniqueArr;
@@ -27,6 +31,7 @@ function removeDuplicates(arr) {
 
 var arr = [12, 34, 45, 9, 8, 90, 3, 12, 34, 8];
 
+console.log(`orignal arr: ${arr}`);
 arr = removeDuplicates(arr);
 segregateEvenOdd(arr);
 

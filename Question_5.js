@@ -3,9 +3,9 @@ function capitalizeCharacter(inputString, charToCapitalize) {
   
     for (let i = 0; i < inputString.length; i++) {
       if (inputString[i] === charToCapitalize) {
-        result += charToCapitalize.toUpperCase();
+        result = result + charToCapitalize.toUpperCase();
       } else {
-        result += inputString[i];
+        result = result + inputString[i];
       }
     }
   

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://unpkg.com/tabulator-tables@5.5.2/dist/css/tabulator.min.css" />
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <button id="file-load-trigger">Open File</button>
+        <div>
+            <button id="add-row">Add Blank Row to bottom</button>
+            <button id="del-row">Remove Selected Row </button>
+            <button id="clear">Empty the table</button>
+            <button id="reset">Reset</button>
+        </div>
+        <div>Number of Row select: <span id="select-stats">0</span> </div>
+        
+    </div>
+    
+    <div id="example-table"></div>
+    <script>
+        // delete row
+        var gDelRow;
+        //Build Tabulator
+var table = new Tabulator("#example-table", {
+    height:311,
+    layout:"fitColumns",
+    addRowPos:"bottom",
+    selectable:true,
+    autoColumns:true,
+    placeholder:"Awaiting Data, Please Load File",
+});
+
+// select row
+table.on("rowSelectionChanged", function(data, rows){
+    gDelRow = data;
+    console.log(data);
+    document.getElementById("select-stats").innerHTML = data.length;
+});
+
+//trigger AJAX load on "Load Data via AJAX" button click
+document.getElementById("file-load-trigger").addEventListener("click", function(){
+    table.import("json", ".json");
+});
+
+//Build Tabulator
+
+//Add row on "Add Row" button click
+document.getElementById("add-row").addEventListener("click", function(){
+    table.addRow({});
+});
+
+//Delete row on "Delete Row" button click
+document.getElementById("del-row").addEventListener("click", function(){
+    try {
+        if(gDelRow.length===0)
+        {
+            alert("plese select row for deletion")
+            return;
+        }
+        gDelRow.forEach(element => {
+            console.log(element.id);
+            table.deleteRow(element.id);
+        });
+        alert("selected rows are deleted")
+    } catch (error) {
+        console.error(error)
+    }
+    
+});
+
+//Clear table on "Empty the table" button click
+document.getElementById("clear").addEventListener("click", function(){
+    table.clearData()
+});
+
+//Reset table contents on "Reset the table" button click
+document.getElementById("reset").addEventListener("click", function(){
+    table.setData(tabledata);
+});
+
+console.log(gDelRow);
+    </script>
+</body>
+
+</html>

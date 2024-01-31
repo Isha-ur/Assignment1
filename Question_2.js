@@ -1,4 +1,4 @@
-var arr = [1,1,1,1,1,1];
+var arr = [1,1,1,1,1,0];
 
 let firstSmallest = 1e8;
 let secondSmallest = 1e8;
